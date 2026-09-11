@@ -14,6 +14,7 @@
   const MAX_SLICES = 12;
   const NIGHT_SLICES = 8;
   const DAY = 864e5;
+  const START_DATE = new Date(2026, 7, 3); // August 3, 2026 — the day it started
   const KEYS = { fav: 'rvadn.v1.favorites', hist: 'rvadn.v1.history', prefs: 'rvadn.v1.prefs' };
   const byId = new Map(OPTIONS.map((o) => [o.id, o]));
   const tplById = new Map(NIGHT_TEMPLATES.map((t) => [t.id, t]));
@@ -75,7 +76,8 @@
     match: $('#matchCount'), reset: $('#resetFilters'), empty: $('#emptyState'), emptyText: $('#emptyText'), emptyReset: $('#emptyReset'),
     hint: $('#hint'), scrim: $('#scrim'), result: $('#resultSheet'), resultBody: $('#resultBody'),
     saved: $('#savedSheet'), savedBtn: $('#savedBtn'), savedCount: $('#savedCount'), savedList: $('#savedList'), savedFoot: $('#savedFoot'),
-    tabFav: $('#tabFav'), tabHist: $('#tabHist'), toast: $('#toast'), announce: $('#announce'), confetti: $('#confetti'), storageNote: $('#storageNote')
+    tabFav: $('#tabFav'), tabHist: $('#tabHist'), toast: $('#toast'), announce: $('#announce'), confetti: $('#confetti'), storageNote: $('#storageNote'),
+    sinceBadge: $('#sinceBadge'), sinceCount: $('#sinceCount')
   };
 
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -713,6 +715,15 @@
   el.scrim.addEventListener('click', () => closeSheet());
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSheet(); });
 
+  // ───────────── Since badge ─────────────
+  // Counts forward from START_DATE like an odometer, so it's always correct without editing.
+  function renderSince() {
+    const days = Math.floor((Date.now() - START_DATE.getTime()) / DAY);
+    if (days < 0 || !el.sinceCount) return;
+    el.sinceCount.textContent = days === 0 ? 'Day 1' : `Day ${days + 1}`;
+    el.sinceBadge.hidden = false;
+  }
+
   // ───────────── Boot ─────────────
   function readSharedLink() {
     const q = new URLSearchParams(window.location.search);
@@ -731,6 +742,7 @@
   syncControls();
   rebuildWheel();
   renderSavedCount();
+  renderSince();
   const shared = readSharedLink();
   if (shared) setTimeout(() => openResult(shared, 'shared'), 250);
 
