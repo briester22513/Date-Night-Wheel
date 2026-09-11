@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Bri &amp; Mikaela's Date Night Wheel · Richmond, VA</title>
+  <meta name="description" content="Bri &amp; Mikaela's date-night wheel: real Richmond restaurants, escape rooms, museums, candle making, pottery and more. Spin it. Trust it. Go have fun." />
+  <meta name="theme-color" content="#100613" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- iPhone home-screen app feel -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="B&amp;M Date Night" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <!-- Link previews (iMessage, Slack…). For best results replace with your full https URL after deploying. -->
+  <meta property="og:title" content="Bri &amp; Mikaela's Date Night Wheel" />
+  <meta property="og:description" content="Richmond date nights, one spin at a time." />
+  <meta property="og:image" content="assets/og-image.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="preload" href="fonts/bodoni-moda-latin-opsz-italic.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fonts/bricolage-grotesque-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <main class="app" id="app">
+    <header class="head">
+      <p class="place">Richmond, Virginia</p>
+      <h1 class="title">Bri <span class="amp">&amp;</span> Mikaela<span class="heart" aria-hidden="true">♥</span></h1>
+      <p class="subtitle">their date night wheel</p>
+      <p class="tagline">For two hardworking women who are tired of asking “what do you wanna do?” Spin it. Trust it. Go have fun.</p>
+      <button class="saved-btn" id="savedBtn" type="button" aria-label="Favorites and date history">
+        <span aria-hidden="true">♡</span>
+        <span class="count" id="savedCount" hidden>0</span>
+      </button>
+    </header>
+
+    <nav class="modes" id="modes" aria-label="What kind of date">
+      <button class="mode" type="button" data-mode="all" aria-pressed="true">All</button>
+      <button class="mode" type="button" data-mode="eat" aria-pressed="false">Eat</button>
+      <button class="mode" type="button" data-mode="play" aria-pressed="false">Play</button>
+      <button class="mode" type="button" data-mode="create" aria-pressed="false">Create</button>
+      <button class="mode" type="button" data-mode="full" aria-pressed="false">Full Date</button>
+    </nav>
+
+    <section class="filters" aria-label="Filters">
+      <div class="filter-row">
+        <span class="filter-label" id="budgetLabel">Budget</span>
+        <div role="group" aria-labelledby="budgetLabel" style="display:flex;gap:6px">
+          <button class="chip budget" type="button" data-price="1" aria-pressed="false" aria-label="Budget: $">$</button>
+          <button class="chip budget" type="button" data-price="2" aria-pressed="false" aria-label="Budget: $$">$$</button>
+          <button class="chip budget" type="button" data-price="3" aria-pressed="false" aria-label="Budget: $$$">$$$</button>
+        </div>
+        <button class="toggle" id="indoorToggle" type="button" role="switch" aria-checked="true">
+          <span class="track" aria-hidden="true"></span>Indoor only
+        </button>
+      </div>
+      <div class="filter-row scroll" role="group" aria-label="Mood">
+        <span class="filter-label">Mood</span>
+        <button class="chip mood" type="button" data-mood="chill" aria-pressed="false">Chill</button>
+        <button class="chip mood" type="button" data-mood="romantic" aria-pressed="false">Romantic</button>
+        <button class="chip mood" type="button" data-mood="competitive" aria-pressed="false">Competitive</button>
+        <button class="chip mood" type="button" data-mood="creative" aria-pressed="false">Creative</button>
+        <button class="chip mood" type="button" data-mood="foodie" aria-pressed="false">Foodie</button>
+        <button class="chip mood" type="button" data-mood="spontaneous" aria-pressed="false">Spontaneous</button>
+      </div>
+      <div class="status">
+        <span id="matchCount" aria-live="polite">Loading dates…</span>
+        <button class="link-btn" id="resetFilters" type="button" hidden>Clear filters</button>
+      </div>
+    </section>
+
+    <section class="stage" aria-label="Wheel">
+      <div class="wheel-wrap" id="wheelWrap">
+        <svg class="pointer" id="pointer" viewBox="0 0 44 54" aria-hidden="true">
+          <defs>
+            <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#ffe3a8" /><stop offset="1" stop-color="#c9973f" />
+            </linearGradient>
+          </defs>
+          <path d="M22 52 L6 26 A11 11 0 0 1 22 10 A11 11 0 0 1 38 26 Z" fill="url(#pg)" stroke="#100613" stroke-width="2" />
+          <path d="M22 22 c-2-3.4-7-2.4-7 1.4 0 3 4 5.4 7 8 3-2.6 7-5 7-8 0-3.8-5-4.8-7-1.4z" fill="#ff6fae" />
+        </svg>
+        <div class="wheel-rotor" id="rotor"></div>
+        <button class="hub" id="hubSpin" type="button" aria-label="Spin the wheel">
+          <span class="h-heart" aria-hidden="true">♥</span>
+          <span class="h-word">Spin</span>
+        </button>
+        <div class="empty" id="emptyState" hidden>
+          <strong>Nothing fits yet</strong>
+          <p id="emptyText">No dates match every filter you picked.</p>
+          <button class="link-btn" id="emptyReset" type="button">Clear filters</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="spin-btn" id="spinBtn" type="button">Spin the date</button>
+        <div class="secondary">
+          <button class="ghost" id="surpriseBtn" type="button"><span class="em" aria-hidden="true">🎲</span>Surprise us</button>
+          <button class="ghost" id="shuffleBtn" type="button"><span class="em" aria-hidden="true">↻</span>New options</button>
+          <button class="ghost night wide" id="nightBtn" type="button"><span class="em" aria-hidden="true">💫</span>Build our whole night</button>
+        </div>
+        <p class="hint" id="hint">Too indecisive for one spin? “Build our whole night” plans food, an activity, and a little ending.</p>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>Made for random RVA adventures: mostly indoors, foodie-friendly, and no mandatory bowling or golf 😌</p>
+      <p>Local businesses change hours and availability, so check before heading out.</p>
+      <p class="storage-note" id="storageNote" hidden>This browser is blocking storage (often Private Browsing), so favorites and history will reset when you close the tab.</p>
+    </footer>
+  </main>
+
+  <!-- Result sheet -->
+  <div class="scrim" id="scrim" hidden></div>
+  <section class="sheet" id="resultSheet" role="dialog" aria-modal="true" aria-labelledby="resultTitle" hidden>
+    <div class="grab" aria-hidden="true"></div>
+    <button class="sheet-close" type="button" data-close aria-label="Close">✕</button>
+    <div id="resultBody"></div>
+  </section>
+
+  <!-- Favorites & history sheet -->
+  <section class="sheet" id="savedSheet" role="dialog" aria-modal="true" aria-labelledby="savedTitle" hidden>
+    <div class="grab" aria-hidden="true"></div>
+    <button class="sheet-close" type="button" data-close aria-label="Close">✕</button>
+    <h2 class="sr-only" id="savedTitle">Saved dates</h2>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tabFav" aria-selected="true" aria-controls="savedList">Favorites</button>
+      <button class="tab" role="tab" id="tabHist" aria-selected="false" aria-controls="savedList">Date history</button>
+    </div>
+    <ul class="list" id="savedList" role="tabpanel"></ul>
+    <div class="list-foot" id="savedFoot"></div>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <p class="sr-only" id="announce" aria-live="assertive"></p>
+
+  <noscript><p style="padding:24px">This wheel needs JavaScript turned on to spin.</p></noscript>
+
+  <script src="js/data.js"></script>
+  <script src="js/wheel.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
